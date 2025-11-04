@@ -9,7 +9,6 @@
   --bg:#071025;
   --card:#0b1220;
   --muted:#9aa4b2;
-  --accent2:#4f46e5;
   --highlight:#ffeb3b;
   --font-size:16px;
 }
@@ -25,6 +24,7 @@ body{
 header{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;}
 h1{font-size:20px;margin:0;color:var(--highlight);font-weight:900;text-shadow:0 0 6px rgba(255,255,0,0.5);}
 input[type=search], select{padding:12px 16px;border-radius:10px;border:1px solid rgba(0,0,0,0.4);background:var(--highlight);color:#000;font-weight:bold;font-size:16px;}
+h2{margin-top:24px;color:#ffeb3b;}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;}
 .card{cursor:pointer;border-radius:8px;overflow:hidden;outline:none;transition: transform 0.2s, box-shadow 0.2s;}
 .card:hover, .card:focus{transform: scale(1.05); box-shadow:0 8px 20px rgba(255,235,59,0.6);}
@@ -43,10 +43,10 @@ input[type=search], select{padding:12px 16px;border-radius:10px;border:1px solid
 .episode-card.focused{box-shadow:0 0 12px var(--highlight); transform: scale(1.05);}
 .play-btn{margin-top:6px;padding:8px;border:0;border-radius:8px;background: var(--highlight);color:#000;cursor:pointer;width:100%;font-size:14px;transition: all 0.2s;}
 .play-btn:hover, .play-btn:focus{background:var(--highlight);color:#000;outline:none;}
-#pagination{display:flex;justify-content:center;gap:6px;margin-top:12px;}
-#pagination button{padding:10px 14px;border-radius:6px;border:1px solid #fff;background:transparent;color:#fff;cursor:pointer;font-size:14px;}
-#pagination button.active{background:var(--highlight);color:#000;}
-#pagination button:hover, #pagination button:focus{background:var(--highlight);color:#000;outline:none;}
+.pagination{display:flex;justify-content:center;gap:6px;margin-top:12px;}
+.pagination button{padding:10px 14px;border-radius:6px;border:1px solid #fff;background:transparent;color:#fff;cursor:pointer;font-size:14px;}
+.pagination button.active{background:var(--highlight);color:#000;}
+.pagination button:hover, .pagination button:focus{background:var(--highlight);color:#000;outline:none;}
 .seasons::-webkit-scrollbar{display: none;}
 </style>
 </head>
@@ -70,7 +70,6 @@ input[type=search], select{padding:12px 16px;border-radius:10px;border:1px solid
       <option value="Comedia">Comedia</option>
       <option value="Drama">Drama</option>
       <option value="Sci-Fi">Sci-Fi</option>
-      <option value="Thriller">Thriller</option>
       <option value="Terror">Terror</option>
     </select>
     <select id="filterYear" style="width:100px" tabindex="0"><option value="">Año</option></select>
@@ -78,8 +77,13 @@ input[type=search], select{padding:12px 16px;border-radius:10px;border:1px solid
 </header>
 
 <main>
-  <div id="grid" class="grid"></div>
-  <div id="pagination"></div>
+  <h2>Películas</h2>
+  <div id="movies-grid" class="grid"></div>
+  <div id="movies-pagination" class="pagination"></div>
+
+  <h2>Series</h2>
+  <div id="series-grid" class="grid"></div>
+  <div id="series-pagination" class="pagination"></div>
 </main>
 
 <div id="overlay" class="overlay">
@@ -143,13 +147,14 @@ const mediaData = [
 ];
 
 // ===== Variables =====
-let itemsPerPage = 15, currentPage = 1, filteredData = mediaData, focusIndex = 0;
+let itemsPerPage = 12; 
+let moviePage = 1, seriesPage = 1;
+let filteredData = mediaData;
 let inModal = false, modalFocusedSeason = 0, modalFocusedEpisode = 0;
 let currentSeries = null, activeSeasonIndex = 0;
+let movieFocus = 0, seriesFocus = 0, sectionFocus = 'movies';
 
 // ===== Elementos =====
-const gridEl = document.getElementById('grid');
-const paginationEl = document.getElementById('pagination');
 const searchEl = document.getElementById('search');
 const filterEl = document.getElementById('filter');
 const genreEl = document.getElementById('genre-filter');
@@ -159,47 +164,73 @@ const modalTitle = document.getElementById('modal-title');
 const modalSub = document.getElementById('modal-sub');
 const seasonsEl = document.getElementById('seasons');
 const episodesEl = document.getElementById('episodes');
-document.getElementById('modal-close').onclick = ()=>{ overlay.classList.remove('show'); inModal=false; setFocus(focusIndex); };
+document.getElementById('modal-close').onclick = ()=>{ overlay.classList.remove('show'); inModal=false; setFocus(sectionFocus, sectionFocus==='movies'?movieFocus:seriesFocus); };
 
-// ===== Funciones Grid =====
-function renderGrid(list){
-  filteredData=list;
-  const totalPages=Math.ceil(list.length/itemsPerPage);
-  if(currentPage>totalPages) currentPage=totalPages||1;
-  const start=(currentPage-1)*itemsPerPage;
-  const end=start+itemsPerPage;
-  const pageItems=list.slice(start,end);
-  gridEl.innerHTML='';
-  if(!pageItems.length){ gridEl.innerHTML='<div style="color:var(--muted)">Sin resultados</div>'; paginationEl.innerHTML=''; return; }
-  pageItems.forEach((item,i)=>{
+// ===== Filtros =====
+[...new Set(mediaData.map(i=>i.year))].sort((a,b)=>b-a).forEach(y=>{
+  const o=document.createElement('option'); o.value=y; o.textContent=y; yearEl.appendChild(o);
+});
+
+// ===== Render =====
+function renderByType(data){
+  const moviesEl = document.getElementById('movies-grid');
+  const seriesEl = document.getElementById('series-grid');
+  const moviesPagEl = document.getElementById('movies-pagination');
+  const seriesPagEl = document.getElementById('series-pagination');
+
+  const movies = data.filter(i=>i.type==='movie');
+  const series = data.filter(i=>i.type==='series');
+
+  const movieTotalPages = Math.ceil(movies.length/itemsPerPage) || 1;
+  const seriesTotalPages = Math.ceil(series.length/itemsPerPage) || 1;
+  if(moviePage>movieTotalPages) moviePage=movieTotalPages;
+  if(seriesPage>seriesTotalPages) seriesPage=seriesTotalPages;
+
+  // Películas
+  const movieStart = (moviePage-1)*itemsPerPage;
+  const movieEnd = movieStart + itemsPerPage;
+  moviesEl.innerHTML='';
+  movies.slice(movieStart,movieEnd).forEach(item=>{
     const div=document.createElement('div');
-    div.className='card'; div.tabIndex=0; div.dataset.index=i;
-    div.innerHTML=`<img class="img" src="${item.poster}"><div class="info"><div class="title">${item.title}</div><div class="meta">${item.type} • ${item.year} • ${item.genre}</div></div>`;
-    div.onclick=()=>item.type==='movie'?window.open(item.link,'_blank'):openSeriesModal(item);
-    gridEl.appendChild(div);
+    div.className='card'; div.tabIndex=0;
+    div.innerHTML=`<img class="img" src="${item.poster}"><div class="info"><div class="title">${item.title}</div><div class="meta">${item.year} • ${item.genre}</div></div>`;
+    div.onclick=()=>window.open(item.link,'_blank');
+    moviesEl.appendChild(div);
   });
-  renderPagination(Math.ceil(list.length/itemsPerPage));
-  setFocus(focusIndex);
-}
+  moviesPagEl.innerHTML='';
+  for(let i=1;i<=movieTotalPages;i++){
+    const btn=document.createElement('button'); btn.textContent=i;
+    if(i===moviePage) btn.classList.add('active');
+    btn.onclick=()=>{ moviePage=i; renderByType(filteredData); };
+    moviesPagEl.appendChild(btn);
+  }
 
-function renderPagination(totalPages){
-  paginationEl.innerHTML='';
-  for(let i=1;i<=totalPages;i++){
-    const btn=document.createElement('button');
-    btn.textContent=i;
-    if(i===currentPage) btn.classList.add('active');
-    btn.tabIndex=0;
-    btn.onclick=()=>{ currentPage=i; renderGrid(filteredData); focusIndex=0; };
-    paginationEl.appendChild(btn);
+  // Series
+  const seriesStart = (seriesPage-1)*itemsPerPage;
+  const seriesEnd = seriesStart + itemsPerPage;
+  seriesEl.innerHTML='';
+  series.slice(seriesStart,seriesEnd).forEach(item=>{
+    const div=document.createElement('div');
+    div.className='card'; div.tabIndex=0;
+    div.innerHTML=`<img class="img" src="${item.poster}"><div class="info"><div class="title">${item.title}</div><div class="meta">${item.year} • ${item.genre}</div></div>`;
+    div.onclick=()=>openSeriesModal(item);
+    seriesEl.appendChild(div);
+  });
+  seriesPagEl.innerHTML='';
+  for(let i=1;i<=seriesTotalPages;i++){
+    const btn=document.createElement('button'); btn.textContent=i;
+    if(i===seriesPage) btn.classList.add('active');
+    btn.onclick=()=>{ seriesPage=i; renderByType(filteredData); };
+    seriesPagEl.appendChild(btn);
   }
 }
 
-// ===== Funciones Modal =====
+// ===== Modal =====
 function openSeriesModal(series){
   currentSeries = series;
   modalTitle.textContent = series.title;
   modalSub.textContent = 'Selecciona temporada y episodio';
-  seasonsEl.innerHTML = ''; episodesEl.innerHTML = '';
+  seasonsEl.innerHTML=''; episodesEl.innerHTML='';
   series.seasons.forEach((s,i)=>{
     const b=document.createElement('button'); b.className='season-btn'+(i===0?' active':''); b.tabIndex=0; b.textContent='T'+s.season;
     b.onclick=()=> setModalSeason(i);
@@ -208,27 +239,22 @@ function openSeriesModal(series){
   setModalSeason(0);
   overlay.classList.add('show'); inModal=true;
 }
-
 function setModalSeason(seasonIdx){
   activeSeasonIndex=seasonIdx;
-  modalFocusedSeason=seasonIdx;
-  modalFocusedEpisode=0;
+  modalFocusedSeason=seasonIdx; modalFocusedEpisode=0;
   document.querySelectorAll('.season-btn').forEach(x=>x.classList.remove('active'));
   document.querySelectorAll('.season-btn')[seasonIdx].classList.add('active');
   renderEpisodes();
-  setModalFocus();
 }
-
 function renderEpisodes(){
   episodesEl.innerHTML='';
   currentSeries.seasons[activeSeasonIndex].episodes.forEach((ep,i)=>{
-    const div=document.createElement('div'); div.className='episode-card'; div.tabIndex=0; div.dataset.index=i;
+    const div=document.createElement('div'); div.className='episode-card'; div.tabIndex=0;
     div.innerHTML=`<div style="color:#fff;font-size:14px;font-weight:bold">${ep.title}</div><button class="play-btn">Ver episodio</button>`;
     div.querySelector('button').onclick=()=>window.open(ep.link,'_blank');
     episodesEl.appendChild(div);
   });
 }
-
 function setModalFocus(){
   const eps = episodesEl.querySelectorAll('.episode-card');
   eps.forEach(e=>e.classList.remove('focused'));
@@ -236,44 +262,55 @@ function setModalFocus(){
 }
 
 // ===== Filtros =====
-[...new Set(mediaData.map(i=>i.year))].sort((a,b)=>b-a).forEach(y=>{ const o=document.createElement('option'); o.value=y;o.textContent=y; yearEl.appendChild(o);});
 function applyFilters(){
-  const q=searchEl.value.toLowerCase(), type=filterEl.value, gen=genreEl.value, year=yearEl.value;
-  const filtered = mediaData.filter(m=>
-    (type==='all'||m.type===type)&&
-    (gen==='all'||m.genre===gen)&&
-    (!year||String(m.year)===year)&&
-    (m.title.toLowerCase().includes(q))
+  const q = searchEl.value.toLowerCase();
+  const type = filterEl.value;
+  const genre = genreEl.value;
+  const year = yearEl.value;
+
+  filteredData = mediaData.filter(m=>
+    (type==='all'||m.type===type) &&
+    (genre==='all'||m.genre===genre) &&
+    (!year||String(m.year)===year) &&
+    m.title.toLowerCase().includes(q)
   );
-  currentPage=1; focusIndex=0;
-  renderGrid(filtered);
+  moviePage=1; seriesPage=1;
+  renderByType(filteredData);
 }
 searchEl.oninput=filterEl.onchange=genreEl.onchange=yearEl.onchange=applyFilters;
 
-// ===== Navegación teclado =====
-function setFocus(idx){ const cards=document.querySelectorAll('.card'); if(cards[idx]) cards[idx].focus(); }
+// ===== Foco teclado =====
+function setFocus(section, idx){
+  let cards = section==='movies'?document.querySelectorAll('#movies-grid .card'):document.querySelectorAll('#series-grid .card');
+  if(cards[idx]) cards[idx].focus();
+}
 
-document.addEventListener('keydown',e=>{
+document.addEventListener('keydown', e=>{
   if(inModal){
     const eps = episodesEl.querySelectorAll('.episode-card');
     if(e.key==='ArrowRight'){ modalFocusedEpisode=(modalFocusedEpisode+1)%eps.length; setModalFocus(); e.preventDefault(); }
     if(e.key==='ArrowLeft'){ modalFocusedEpisode=(modalFocusedEpisode-1+eps.length)%eps.length; setModalFocus(); e.preventDefault(); }
     if(e.key==='ArrowUp'){ modalFocusedSeason=(modalFocusedSeason-1+currentSeries.seasons.length)%currentSeries.seasons.length; setModalSeason(modalFocusedSeason); e.preventDefault(); }
     if(e.key==='ArrowDown'){ modalFocusedSeason=(modalFocusedSeason+1)%currentSeries.seasons.length; setModalSeason(modalFocusedSeason); e.preventDefault(); }
-    if(e.key==='Enter'){ const link=currentSeries.seasons[activeSeasonIndex].episodes[modalFocusedEpisode].link; window.open(link,'_blank'); e.preventDefault(); }
+    if(e.key==='Enter'){ window.open(currentSeries.seasons[activeSeasonIndex].episodes[modalFocusedEpisode].link,'_blank'); e.preventDefault(); }
+    if(e.key==='Escape'){ overlay.classList.remove('show'); inModal=false; setFocus(sectionFocus, sectionFocus==='movies'?movieFocus:seriesFocus);}
   } else {
-    const cards=document.querySelectorAll('.card');
-    if(cards.length===0) return;
-    if(e.key==='ArrowRight'){ focusIndex=(focusIndex+1)%cards.length; setFocus(focusIndex); e.preventDefault(); }
-    if(e.key==='ArrowLeft'){ focusIndex=(focusIndex-1+cards.length)%cards.length; setFocus(focusIndex); e.preventDefault(); }
-    if(e.key==='ArrowDown'){ currentPage++; renderGrid(filteredData); e.preventDefault(); }
-    if(e.key==='ArrowUp'){ currentPage--; renderGrid(filteredData); e.preventDefault(); }
-    if(e.key==='Enter'){ cards[focusIndex].click(); e.preventDefault(); }
+    let cards = sectionFocus==='movies'?document.querySelectorAll('#movies-grid .card'):document.querySelectorAll('#series-grid .card');
+    let focusIdx = sectionFocus==='movies'?movieFocus:seriesFocus;
+
+    if(e.key==='ArrowRight'){ focusIdx=(focusIdx+1)%cards.length; cards[focusIdx].focus(); e.preventDefault();}
+    if(e.key==='ArrowLeft'){ focusIdx=(focusIdx-1+cards.length)%cards.length; cards[focusIdx].focus(); e.preventDefault();}
+    if(e.key==='ArrowDown'){ sectionFocus=sectionFocus==='movies'?'series':'movies'; focusIdx=sectionFocus==='movies'?movieFocus:seriesFocus; setFocus(sectionFocus, focusIdx); e.preventDefault();}
+    if(e.key==='ArrowUp'){ sectionFocus=sectionFocus==='series'?'movies':'series'; focusIdx=sectionFocus==='movies'?movieFocus:seriesFocus; setFocus(sectionFocus, focusIdx); e.preventDefault();}
+    if(e.key==='Enter'){ cards[focusIdx].click(); e.preventDefault(); }
+
+    if(sectionFocus==='movies') movieFocus = focusIdx;
+    else seriesFocus = focusIdx;
   }
 });
 
 // ===== Inicializar =====
-renderGrid(mediaData);
+renderByType(mediaData);
 </script>
 
 </body>
