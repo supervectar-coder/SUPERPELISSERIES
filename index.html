@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>SUPERVECTAR PELIS Y SERIES TV</title>
+<title>SUPERVECTAR PELIS Y SERIES</title>
 <style>
 :root{
   --bg:#071025;
@@ -70,6 +70,7 @@ h2{margin-top:24px;color:#ffeb3b;}
       <option value="Comedia">Comedia</option>
       <option value="Drama">Drama</option>
       <option value="Sci-Fi">Sci-Fi</option>
+      <option value="Thriller">Thriller</option>	  
       <option value="Terror">Terror</option>
     </select>
     <select id="filterYear" style="width:100px" tabindex="0"><option value="">Año</option></select>
@@ -111,6 +112,34 @@ const mediaData = [
   { id:'28añosdespues', type:'movie', title:'28 años despues', year:2025, genre:'Terror', poster:'https://es.web.img3.acsta.net/r_1920_1080/img/5c/f3/5cf309bb27c25dd8a20548e7e6ae9d94.jpg', link:'https://filemoon.to/d/ercrsideydgg/28_a_os_despu_s_mp4.mp4'},
   { id:'28semanasdespues', type:'movie', title:'28 semanas despues', year:2007, genre:'Terror', poster:'https://es.web.img2.acsta.net/r_1920_1080/medias/nmedia/18/89/50/99/20051366.jpg', link:'https://filemoon.to/d/cqpuueqy1v9b/28_semanas_despu_s_Castellano__2007_.mp4'},
   { id:'28diasdespues', type:'movie', title:'28 dias despues', year:2002, genre:'Terror', poster:'https://es.web.img2.acsta.net/r_1920_1080/medias/nmedia/18/79/49/98/19505162.jpg', link:'https://filemoon.to/d/0cyrzddgiqbg/28_Dias_despues_Castellano__2002_.mp4'},  
+  { id:'alienplanetatierra', type:'series', title:'Alien planeta tierra', year:2025, genre:'Sci-Fi', poster:'https://es.web.img3.acsta.net/r_1920_1080/img/57/36/5736157cbb0f715b263d941bfa58f4a6.jpg',
+    seasons:[
+      {season:1, episodes:[
+        {title:'T1 · Ep1', link:'https://filemoon.to/d/5ef9wvb6xelu/Alien_Planeta_Tierra_1x01_mp4.mp4'},
+        {title:'T1 · Ep2', link:'https://filemoon.to/d/mzxr6pbb0a39/Alien_Planeta_Tierra_1x02_mp4.mp4'},       
+        {title:'T1 · Ep3', link:'https://filemoon.to/d/zhatiglgr096/Alien_Planeta_Tierra_1x03_mp4.mp4'}, 
+	    {title:'T1 · Ep4', link:'https://filemoon.to/d/envacz7zj45p/Alien_Planeta_Tierra_1x04_mp4.mp4'},
+        {title:'T1 · Ep5', link:'https://filemoon.to/d/h8v0u5t10mve/Alien_Planeta_Tierra_1x05_mp4.mp4'},
+        {title:'T1 · Ep6', link:'https://filemoon.to/d/4i7a09xduonw/Alien_Planeta_Tierra_1x06_mp4.mp4'},	   
+        {title:'T1 · Ep7', link:'https://filemoon.to/d/pm9jz44zyevu/Alien_Planeta_Tierra_1x07_mp4.mp4'},
+        {title:'T1 · Ep8', link:'https://filemoon.to/d/1zjd1kaiiuur/Alien_planeta_tierra_1x08_mp4.mp4'}
+      ]}
+    ]
+  },
+  { id:'elrefugioatomico', type:'series', title:'El refugio atomico', year:2025, genre:'Thriller', poster:'https://es.web.img3.acsta.net/r_1920_1080/img/8b/d8/8bd8505edf0b3b1807119d9556524bfb.jpg',
+    seasons:[
+      {season:1, episodes:[
+        {title:'T1 · Ep1', link:'https://filemoon.to/d/w8a6y2iszg6t/El_refugio_at_mico_1x01_mp4.mp4'},
+        {title:'T1 · Ep2', link:'https://filemoon.to/d/vxdv5e7paoeo/El_refugio_at_mico_1x02_mp4.mp4'},       
+        {title:'T1 · Ep3', link:'https://filemoon.to/d/q0hsgpm3igkl/El_refugio_at_mico_1x03_mp4.mp4'}, 
+	    {title:'T1 · Ep4', link:'https://filemoon.to/d/39j9xz00k4wy/El_refugio_at_mico_1x04_mp4.mp4'},
+        {title:'T1 · Ep5', link:'https://filemoon.to/d/5z1fjp30rjro/El_refugio_at_mico_1x05_mp4.mp4'},
+        {title:'T1 · Ep6', link:'https://filemoon.to/d/5bsh6bmqfops/El_refugio_at_mico_1x06_mp4.mp4'},	   
+        {title:'T1 · Ep7', link:'https://filemoon.to/d/wyobdh08cs54/El_refugio_at_mico_1x07_mp4.mp4'},
+        {title:'T1 · Ep8', link:'https://filemoon.to/d/9vkobdxfwb4r/El_refugio_at_mico_1x08_mp4.mp4'}
+      ]}
+    ]
+  },
   { id:'dostumbas', type:'series', title:'Dos tumbas', year:2025, genre:'Drama', poster:'https://es.web.img3.acsta.net/r_1920_1080/img/ed/cb/edcbfa403b455f8e3f24a82f2b6b7937.jpg',
     seasons:[
       {season:1, episodes:[
