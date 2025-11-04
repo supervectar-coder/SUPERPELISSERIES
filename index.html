@@ -66,6 +66,7 @@ h2{margin-top:24px;color:#ffeb3b;}
     </select>
     <select id="genre-filter" tabindex="0">
       <option value="all">Género</option>
+      <option value="PelisEspañolas">Pelis Españolas</option>	  
       <option value="Acción">Acción</option>
       <option value="Comedia">Comedia</option>
       <option value="Drama">Drama</option>
@@ -111,7 +112,14 @@ const mediaData = [
   { id:'Terrifier1', type:'movie', title:'Terrifier 1', year:2016, genre:'Terror', poster:'https://es.web.img3.acsta.net/r_1920_1080/pictures/23/05/22/23/33/0283734.png', link:'https://filemoon.to/d/itcjbe3ajf33/Terrifier.mp4'},
   { id:'28añosdespues', type:'movie', title:'28 años despues', year:2025, genre:'Terror', poster:'https://es.web.img3.acsta.net/r_1920_1080/img/5c/f3/5cf309bb27c25dd8a20548e7e6ae9d94.jpg', link:'https://filemoon.to/d/ercrsideydgg/28_a_os_despu_s_mp4.mp4'},
   { id:'28semanasdespues', type:'movie', title:'28 semanas despues', year:2007, genre:'Terror', poster:'https://es.web.img2.acsta.net/r_1920_1080/medias/nmedia/18/89/50/99/20051366.jpg', link:'https://filemoon.to/d/cqpuueqy1v9b/28_semanas_despu_s_Castellano__2007_.mp4'},
-  { id:'28diasdespues', type:'movie', title:'28 dias despues', year:2002, genre:'Terror', poster:'https://es.web.img2.acsta.net/r_1920_1080/medias/nmedia/18/79/49/98/19505162.jpg', link:'https://filemoon.to/d/0cyrzddgiqbg/28_Dias_despues_Castellano__2002_.mp4'},  
+  { id:'28diasdespues', type:'movie', title:'28 dias despues', year:2002, genre:'Terror', poster:'https://es.web.img2.acsta.net/r_1920_1080/medias/nmedia/18/79/49/98/19505162.jpg', link:'https://filemoon.to/d/0cyrzddgiqbg/28_Dias_despues_Castellano__2002_.mp4'},
+  { id:'laqueseavecina', type:'series', title:'La que se avecina', year:2026, genre:'Comedia', poster:'https://upload.wikimedia.org/wikipedia/commons/0/09/LaQueSeAvecina.jpg',
+    seasons:[
+      {season:1, episodes:[
+        {title:'TODAS LAS TEMPORADAS', link:'https://cuatro.comunidadmontepinar.eu/'}
+      ]}
+    ]
+  },
   { id:'alienplanetatierra', type:'series', title:'Alien planeta tierra', year:2025, genre:'Sci-Fi', poster:'https://es.web.img3.acsta.net/r_1920_1080/img/57/36/5736157cbb0f715b263d941bfa58f4a6.jpg',
     seasons:[
       {season:1, episodes:[
@@ -126,7 +134,31 @@ const mediaData = [
       ]}
     ]
   },
-  { id:'elrefugioatomico', type:'series', title:'El refugio atomico', year:2025, genre:'Thriller', poster:'https://es.web.img3.acsta.net/r_1920_1080/img/8b/d8/8bd8505edf0b3b1807119d9556524bfb.jpg',
+    { id:'respira', type:'series', title:'Respira', year:2025, genre:'Drama', poster:'https://es.web.img3.acsta.net/r_1920_1080/img/50/23/502382d1a0244da260c261f01350f976.jpg',
+    seasons:[
+      {season:1, episodes:[
+        {title:'T1 · Ep1', link:'https://filemoon.to/d/yzklwkcrw64w/30_Monedas_-_1x01_Telara_as.mp4'},
+        {title:'T1 · Ep2', link:'https://filemoon.to/d/eul1dkf8numu/30_Monedas_-_1x02_Ouija.mp4'},
+        {title:'T1 · Ep3', link:'https://filemoon.to/d/dif0ydiphi71/30_Monedas_-_1x03_El_espejo.mp4'},
+        {title:'T1 · Ep4', link:'https://filemoon.to/d/tmubuhfy2po9/30_Monedas_-_1x04_Recuerdos.mp4'},
+        {title:'T1 · Ep5', link:'https://filemoon.to/d/y3vomz482v6m/30_Monedas_-_1x05_El_doble.mp4'},
+        {title:'T1 · Ep6', link:'https://filemoon.to/d/lra9rz0seekn/30_Monedas_-_1x06_Guerra_Santa.mp4'},
+        {title:'T1 · Ep7', link:'https://filemoon.to/d/e71772736yd2/30_Monedas_-_1x07_La_caja_de_cristal.mp4'},
+        {title:'T1 · Ep8', link:'https://filemoon.to/d/hg0eed2c2t7h/30_Monedas_-_1x08_Sacrificio.mp4'}
+      ]},
+      {season:2, episodes:[
+        {title:'T2 · Ep1', link:'https://filemoon.to/d/xhhepmnj9rx4/30_Monedas_2x1_EL_PUEBLO_FANTASMA.mp4'},
+        {title:'T2 · Ep2', link:'https://filemoon.to/d/ofc8340q1jdd/30_Monedas_2x2_LAS_TIERRAS_DEL_SUE_O.mp4'},
+        {title:'T2 · Ep3', link:'https://filemoon.to/d/skn48361xwoq/30_Monedas_2x3_CRIATURAS_INFERNALES.mp4'},
+        {title:'T2 · Ep4', link:'https://filemoon.to/d/n23bfy4ainf7/30_Monedas_2x4_EL_LIBRO_NEGRO_DE_ARABE_LOCO.mp4'},
+        {title:'T2 · Ep5', link:'https://filemoon.to/d/dovihz0fw49t/30_Monedas_2x5_EL_SIMBOLO_ARCANO.mp4'},
+        {title:'T2 · Ep6', link:'https://filemoon.to/d/o2myrqqurgiq/30_Monedas_2x6_RESETEAR_EL_MUNDO.mp4'},
+        {title:'T2 · Ep7', link:'https://filemoon.to/d/qvosbzuc05jk/30_Monedas_2x7_LOS_DOS_NUCLEOS.mp4'},
+        {title:'T2 · Ep8', link:'https://filemoon.to/d/xhzxlxxgl7qx/30_Monedas_2x8_EL_OJO_DE_DIOS.mp4'}
+      ]}
+    ]
+  },
+ { id:'elrefugioatomico', type:'series', title:'El refugio atomico', year:2025, genre:'Thriller', poster:'https://es.web.img3.acsta.net/r_1920_1080/img/8b/d8/8bd8505edf0b3b1807119d9556524bfb.jpg',
     seasons:[
       {season:1, episodes:[
         {title:'T1 · Ep1', link:'https://filemoon.to/d/w8a6y2iszg6t/El_refugio_at_mico_1x01_mp4.mp4'},
@@ -176,7 +208,7 @@ const mediaData = [
 ];
 
 // ===== Variables =====
-let itemsPerPage = 12; 
+let itemsPerPage = 6; 
 let moviePage = 1, seriesPage = 1;
 let filteredData = mediaData;
 let inModal = false, modalFocusedSeason = 0, modalFocusedEpisode = 0;
