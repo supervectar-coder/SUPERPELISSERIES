@@ -107,9 +107,14 @@ h2{margin-top:24px;color:#ffeb3b;}
 <script>
 // ===== Datos =====
 const mediaData = [
+  { id:'laguerradelosmundos', type:'movie', title:'La guerra de los mundos', year:2025, genre:'Sci-Fi', poster:'https://pics.filmaffinity.com/war_of_the_worlds-696322913-large.jpg', link:'https://filemoon.to/d/0jzsw66tzd1k/La_guerra_de_los_mundos_mp4.mp4'},
+  { id:'jurassicworldelrenacer', type:'movie', title:'Jurassic world: El renacer', year:2025, genre:'Sci-Fi', poster:'https://es.web.img2.acsta.net/r_1920_1080/img/b5/8e/b58eb14511f96ff489d1aa6972af8b1a.jpg', link:'https://filemoon.to/d/c46318ygoi0p/JURASSIC_WORLD_EL_RENACER_mp4.mp4'},
+  { id:'superman', type:'movie', title:'Superman', year:2025, genre:'Sci-Fi', poster:'https://es.web.img2.acsta.net/r_1920_1080/img/b3/3e/b33e01f98f8ca3702a3554791633fd6c.jpg', link:'https://filemoon.to/d/77a0ye6456sl/Superman_2025_mp4.mp4'},
+  { id:'los4fantasticos', type:'movie', title:'Los 4 Fantásticos: primeros pasos', year:2025, genre:'Sci-Fi', poster:'https://es.web.img2.acsta.net/r_1920_1080/img/a8/7c/a87c158d7a0c9ac165a2d6e740c14af7.jpg', link:'https://filemoon.to/d/2tjdlfxcuhaw/Los_Cuatro_Fant_sticos_Primeros_pasos_mp4.mp4'},  
+  { id:'capitanamerica', type:'movie', title:'Capitán América: Brave New World', year:2025, genre:'Sci-Fi', poster:'https://es.web.img2.acsta.net/r_1920_1080/img/7f/40/7f40c04fa15064966afb73581ba2feab.jpg', link:'https://filemoon.to/d/dgqpjua2chwk/Captain_America_Brave_New_World_2025_mp4.mp4'},
   { id:'Terrifier3', type:'movie', title:'Terrifier 3', year:2024, genre:'Terror', poster:'https://es.web.img3.acsta.net/r_1920_1080/pictures/23/11/08/08/26/3084799.jpg', link:'https://filemoon.to/d/f234g0c8s0ye/Terrifier_3__2024___Esp_.mkv'},
   { id:'Terrifier2', type:'movie', title:'Terrifier 2', year:2022, genre:'Terror', poster:'https://es.web.img3.acsta.net/r_1920_1080/pictures/22/12/27/12/24/4448854.jpg', link:'https://filemoon.to/d/otitf2ppt4f1/Terrifier_2.mp4'},
-  { id:'Terrifier1', type:'movie', title:'Terrifier 1', year:2016, genre:'Terror', poster:'https://es.web.img3.acsta.net/r_1920_1080/pictures/23/05/22/23/33/0283734.png', link:'https://filemoon.to/d/itcjbe3ajf33/Terrifier.mp4'},
+  { id:'Terrifier1', type:'movie', title:'Terrifier 1', year:2016, genre:'Terror', poster:'https://es.web.img3.acsta.net/r_1920_1080/pictures/23/05/22/23/33/0283734.png', link:'https://filemoon.to/d/itcjbe3ajf33/Terrifier.mp4'},  
   { id:'28añosdespues', type:'movie', title:'28 años despues', year:2025, genre:'Terror', poster:'https://es.web.img3.acsta.net/r_1920_1080/img/5c/f3/5cf309bb27c25dd8a20548e7e6ae9d94.jpg', link:'https://filemoon.to/d/ercrsideydgg/28_a_os_despu_s_mp4.mp4'},
   { id:'28semanasdespues', type:'movie', title:'28 semanas despues', year:2007, genre:'Terror', poster:'https://es.web.img2.acsta.net/r_1920_1080/medias/nmedia/18/89/50/99/20051366.jpg', link:'https://filemoon.to/d/cqpuueqy1v9b/28_semanas_despu_s_Castellano__2007_.mp4'},
   { id:'28diasdespues', type:'movie', title:'28 dias despues', year:2002, genre:'Terror', poster:'https://es.web.img2.acsta.net/r_1920_1080/medias/nmedia/18/79/49/98/19505162.jpg', link:'https://filemoon.to/d/0cyrzddgiqbg/28_Dias_despues_Castellano__2002_.mp4'},
@@ -208,7 +213,7 @@ const mediaData = [
 ];
 
 // ===== Variables =====
-let itemsPerPage = 8; 
+let itemsPerPage = 12; 
 let moviePage = 1, seriesPage = 1;
 let filteredData = mediaData;
 let inModal = false, modalFocusedSeason = 0, modalFocusedEpisode = 0;
